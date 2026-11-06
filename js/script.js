@@ -1,10 +1,30 @@
-/* Menu responsivo da demo Gui Damada */
+/* Menu responsivo da demo Gui Damada; compatível com HTML antigo em cache */
 (() => {
     const header = document.querySelector('header');
-    const toggle = document.querySelector('.menu-toggle');
-    const navigation = document.querySelector('#site-navigation');
+    const navigation = header?.querySelector('nav');
 
-    if (!header || !toggle || !navigation) return;
+    if (!header || !navigation) return;
+
+    if (!navigation.id) navigation.id = 'site-navigation';
+    if (!navigation.hasAttribute('aria-label')) {
+        navigation.setAttribute('aria-label', 'Navegação principal');
+    }
+
+    let toggle = header.querySelector('.menu-toggle');
+
+    // O GitHub Pages pode entregar o HTML antigo junto do CSS novo.
+    // Nesta situação, criamos o botão sem depender da atualização do HTML.
+    if (!toggle) {
+        toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'menu-toggle';
+        toggle.innerHTML = '<span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>';
+        header.insertBefore(toggle, navigation);
+    }
+
+    toggle.setAttribute('aria-controls', navigation.id);
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Abrir menu');
 
     const setMenuOpen = (open) => {
         header.classList.toggle('menu-active', open);
